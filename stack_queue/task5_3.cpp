@@ -2,66 +2,82 @@
 
 using namespace std;
 
-struct queue {
-    int inf;
-    queue *next;
+template<typename type>
+struct Node {
+    type inf;
+    Node *next;
+    Node(type value) : inf(value), next(nullptr) {}
 };
 
-void push(queue *&h, queue *&t, int x) {
-    queue *r = new queue;
-    r->inf = x;
-    r->next = nullptr;
-    if (!h && !t) h = t = r;
-    else {
-        t->next = r;
-        t = r;
-    }
+template<typename type>
+class Queue {
+    private:
+        Node<type> *head;
+        Node<type> *tail;
+    public:
+        Queue() : head(nullptr), tail(nullptr) {}
+        void push(type value);
+        type pop();
+        bool empty() {return !head;}
+        Node<type> *getHead() {return head;}
+        Node<type> *getTail() {return tail;}
+        void setHead(Node<type> *h) {head = h;}
+        void setTail(Node<type> *t) {tail = t;}
+};
 
+template<typename type>
+void Queue<type>::push(type value) {
+    Node<type> *p = new Node<type>(value);
+    if (tail == nullptr) head = tail = p;
+    else {
+        tail->next = p;
+        tail = p;
+    }
 }
 
-int pop(queue *&h, queue *&t) {
-    int x = h->inf;
-    queue *r = h;
-    h = h->next;
-    if (!h) t = NULL;
-    delete r;
+template<typename type>
+type Queue<type>::pop() {
+    type x = head->inf;
+    Node<type> *p = head;
+    head = head->next;
+    if (!head) tail = nullptr;
+    delete p;
     return x;
 }
 
-// Запись первых вхождений в новую очередь 
-void result(queue *&h, queue *&t, queue *&resh, queue *&rest) {
-    queue *h1 = nullptr, *t1 = nullptr;
+// Запись первых вхождений в новую очередь
+template<typename type>
+Queue<type> result(Queue<type> queue) {  
+    Queue<int> tmp, res;
     int x, y;
-    while (h) {
-        x = pop(h, t);
-        push(resh, rest, x);
-        while (h) {
-            y = pop(h, t);
-            if (x != y) push(h1, t1, y);
+    while (!queue.empty()) {
+        x = queue.pop();
+        res.push(x);
+        while (!queue.empty()) {
+            y = queue.pop();
+            if (x != y) tmp.push(y);
         }
-        h = h1; h1 = nullptr;
-        t = t1; t1 = nullptr;
+        queue.setHead(tmp.getHead()); queue.setTail(tmp.getTail());
+        tmp.setHead(nullptr); tmp.setTail(nullptr);
     }
-    h = resh; t = rest;
+    return res;
 }
 
 int main() {
-    queue *h = nullptr, *t = nullptr;
+    Queue<int> queue;
     // Ввод
     cout << "n = ";
     int n, x;
     cin >> n;
     for (int i = 0; i < n; i++) {
         cin >> x;
-        push(h, t, x);
-    }  
+        queue.push(x);
+    }
     
-    queue *resh = nullptr, *rest = nullptr;
-    result(h, t, resh, rest);
+    Queue<int> res = result(queue);
 
     // Вывод результата
-    while (resh)
-        cout << pop(resh, rest) << ' ';
+    while (!res.empty()) cout << res.pop() << ' ';
     cout << endl;
 }
 // 9

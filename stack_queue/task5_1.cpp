@@ -3,83 +3,102 @@
 
 using namespace std;
 
-// Структура очереди
-struct queue {
-    int inf;
-    queue *next;
+template<typename type>
+struct Node {
+    type inf;
+    Node *next;
+    Node(type value) : inf(value), next(nullptr) {}
 };
 
-// Добавление элемента в конец
-void push(queue *&h, queue *&t, int x) {
-    queue *r = new queue;
-    r->inf = x;
-    r->next = nullptr;
-    if (!h && !t) h = t = r;
-    else {
-        t->next = r;
-        t = r;
-    }
+template<typename type>
+class Queue {
+    private:
+        Node<type> *head;
+        Node<type> *tail;
+    public:
+        Queue() : head(nullptr), tail(nullptr) {}
+        void push(type value);
+        type pop();
+        bool empty() {return !head;}
+        Node<type> *getHead() {return head;}
+        Node<type> *getTail() {return tail;}
+        void setHead(Node<type> *h) {head = h;}
+        void setTail(Node<type> *t) {tail = t;}
+};
 
+template<typename type>
+void Queue<type>::push(type value) {
+    Node<type> *p = new Node<type>(value);
+    if (tail == nullptr) head = tail = p;
+    else {
+        tail->next = p;
+        tail = p;
+    }
 }
 
-// Удаления элемента из начала
-int pop(queue *&h, queue *&t) {
-    int x = h->inf;
-    queue *r = h;
-    h = h->next;
-    if (!h) t = NULL;
-    delete r;
+template<typename type>
+type Queue<type>::pop() {
+    type x = head->inf;
+    Node<type> *p = head;
+    head = head->next;
+    if (!head) tail = nullptr;
+    delete p;
     return x;
 }
 
-// Удаление первого и последнего минимального элемента
-void result(queue *&h, queue *&t, queue *&resh, queue *&rest) {
-    int x, min_times = INT_MAX;
-    queue *h1 = h;
+// Удаление первого и последнего минимальных элементов
+Queue<int> result(Queue<int> queue) {
     // Нахождение минимального
-    while (h1) {
-        min_times = min(h1->inf, min_times);
-        h1 = h1->next;
+    Node<int> *head = queue.getHead();
+    int min_el = INT_MAX;
+    while (head) {
+        min_el = min(head->inf, min_el);
+        head = head->next;
     }
-    // Нахождение первой и последней позиции
-    int i = 0, first = -1, last = -1;
-    h1 = h;
-    while (h1) {
-        if (h1->inf == min_times) {
-            if (first == -1) first = i;
-            last = i;
+
+    // Запись в новую очередь
+    Queue<int> tmp, res;
+    bool f = false;
+    int x, y;
+    while (!queue.empty()) {
+        x = queue.pop();
+        if (x == min_el) {
+            if (!f) f = true;
+            else if (tmp.empty()) tmp.push(x);
+            else {
+                while (!tmp.empty()) {
+                    y = tmp.pop();
+                    res.push(y);
+                }
+                tmp.push(x);
+            }
         }
-        h1 = h1->next;
-        i++;
+        else if (tmp.empty()) res.push(x);
+        else tmp.push(x);
     }
-    // Запись результата
-    i = 0;
-    h1 = h;
-    while (h1) {
-        x = pop(h1, t);
-        if (i != first && i != last) {
-            push(resh, rest, x);
-        }
-        i++;
+    tmp.pop();
+    while (!tmp.empty()) {
+        y = tmp.pop();
+        res.push(y);
     }
+    return res;
 }
 
 int main() {
-    queue *h = nullptr, *t = nullptr;
+    Queue<int> queue;
     // Ввод
     cout << "n = ";
     int n, x;
     cin >> n;
     for (int i = 0; i < n; i++) {
         cin >> x;
-        push(h, t, x);
+        queue.push(x);
     }
-
-    queue *resh = nullptr, *rest = nullptr;
-    result(h, t, resh, rest);
+    
+    Queue<int> res = result(queue);
 
     // Вывод результата
-    while (resh) cout << pop(resh, rest) << ' ';
+    while (!res.empty()) cout << res.pop() << ' ';
     cout << endl;
 }
 // 13

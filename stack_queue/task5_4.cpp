@@ -38,7 +38,7 @@ stack* result(stack* head) {
     int x;
     // Подсчет максимального количества делителей 
     stack *tmp = head;
-    int count = 0, max_count = 0;
+    int max_count = 0;
     while (tmp) {
         x = tmp->inf;
         max_count = max(count_dividers(x), max_count);
