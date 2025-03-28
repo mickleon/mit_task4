@@ -33,6 +33,27 @@ int count_dividers(int x) {
     return count;
 }
 
+// Возвращает стек чисел с немаксимальным количеством делителей
+stack* result(stack* head) {
+    int x;
+    // Подсчет максимального количества делителей 
+    stack *tmp = head;
+    int count = 0, max_count = 0;
+    while (tmp) {
+        x = tmp->inf;
+        max_count = max(count_dividers(x), max_count);
+        tmp = tmp->next;
+    }
+    // Нахождение нужных элементов
+    tmp = nullptr;
+    while (head) {
+        x = pop(head);
+        if (count_dividers(x) != max_count)
+            push(tmp, x);
+    }
+    return tmp;
+}
+
 int main() {
     stack *head = nullptr;
     // Ввод
@@ -44,21 +65,7 @@ int main() {
         push(head, x);
     }
     
-    // Подсчет максимального количества делителей 
-    stack *res = head;
-    int count = 0, max_count = 0;
-    while (res) {
-        x = res->inf;
-        max_count = max(count_dividers(x), max_count);
-        res = res->next;
-    }
-    // Нахождение нужных элементов
-    res = nullptr;
-    while (head) {
-        x = pop(head);
-        if (count_dividers(x) != max_count)
-            push(res, x);
-    }
+    stack *res = result(head);
 
     // Вывод результата
     while (res)

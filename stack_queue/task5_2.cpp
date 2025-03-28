@@ -22,6 +22,17 @@ string pop(stack *&h) {
     return x;
 }
 
+// Запись в новый стек нужных строк
+stack* result(stack* head, char letter) {
+    string s;
+    stack *tmp = nullptr;
+    while (head) {
+        s = pop(head);
+        if (s[s.size() - 1] == letter) push(tmp, s);
+    }
+    return tmp;
+}
+
 int main() {
     stack *head = nullptr;
     // Ввод
@@ -35,11 +46,7 @@ int main() {
         push(head, s);
     }
 
-    stack *res = nullptr;
-    while (head) {
-        s = pop(head);
-        if (s[s.size() - 1] == letter) push(res, s);
-    }
+    stack *res = result(head, letter);
 
     // Вывод результата
     while (res)

@@ -32,20 +32,9 @@ int pop(queue *&h, queue *&t) {
     return x;
 }
 
-int main() {
-    queue *h = nullptr, *t = nullptr;
-    // Ввод
-    cout << "n = ";
-    int n, x;
-    cin >> n;
-    for (int i = 0; i < n; i++) {
-        cin >> x;
-        push(h, t, x);
-    }
-
-    // Удаление первого и последнего минимального элемента
-    queue *resh = nullptr, *rest = nullptr;
-    int min_times = INT_MAX;
+// Удаление первого и последнего минимального элемента
+void result(queue *&h, queue *&t, queue *&resh, queue *&rest) {
+    int x, min_times = INT_MAX;
     queue *h1 = h;
     // Нахождение минимального
     while (h1) {
@@ -73,6 +62,21 @@ int main() {
         }
         i++;
     }
+}
+
+int main() {
+    queue *h = nullptr, *t = nullptr;
+    // Ввод
+    cout << "n = ";
+    int n, x;
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> x;
+        push(h, t, x);
+    }
+
+    queue *resh = nullptr, *rest = nullptr;
+    result(h, t, resh, rest);
 
     // Вывод результата
     while (resh) cout << pop(resh, rest) << ' ';
