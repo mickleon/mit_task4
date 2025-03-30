@@ -70,12 +70,22 @@ int main() {
                 d = pop(head);
                 res += d;
             }
+            // Обработка некорректного ввода
+            if (head == nullptr) {
+                cout << "Error: excess \")\"" << endl;
+                return 1;
+            }
             pop(head);
         }
         i++;
     }
     while (head != nullptr) {
         d = pop(head);
+        // Обработка некорректного ввода
+        if (d == '(') {
+            cout << "Error: excess \"(\"" << endl;
+            return 1;
+        }
         res += d;
     }
 
