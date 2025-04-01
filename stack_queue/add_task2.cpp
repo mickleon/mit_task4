@@ -3,6 +3,29 @@
 
 using namespace std;
 
+// Структура стека
+struct stack {
+    int inf;
+    stack *next;
+};
+
+// Добавление элемента в стек
+void push(stack *&h, int x) {
+    stack *r = new stack;
+    r->inf = x;
+    r->next = h;
+    h = r;
+}
+
+// Удаление элемента из стека
+int pop(stack *&h) {
+    int x = h->inf;
+    stack *r = h;
+    h = h->next;
+    delete r;
+    return x;
+}
+
 // Структура узла
 template<typename type>
 struct Node {
@@ -58,32 +81,71 @@ int main() {
     gr[5] = {0, 2, 6};
     gr[6] = {4, 5};
 
-    // Обход в ширину
-    Queue<int> queue;
+    // Обход в глубину
+    stack *head = nullptr;
     vector<int> a(n, 0);
-    a[x] = 1;
-    queue.push(x);
-    cout << endl;
-    cout << x;
-    int y;
-    while (!queue.empty()) {
-        x = queue.pop();
-        for (int i = 0; i < gr[x].size(); i++) {
-            if (a[gr[x][i]] == 0) {
-                y = gr[x][i];
+    bool has_unvisited;
+    cout << "DFS: ";
+    do {
+        a[x] = 1;
+        push(head, x);
+        cout << x << ' ';
+        int y; bool f = false;
+        while (head != nullptr) {
+            x = head->inf;
+            for (int i = 0; i < gr[x].size(); i++) {
+                if (a[gr[x][i]] == 0) {
+                    y = gr[x][i];
+                    f = true;
+                    break;
+                }
+            }
+            if (f) {
                 a[y] = 1;
-                queue.push(y);
-                cout << ", " << y;
+                push(head, y);
+                cout << y << ' ';
+            }
+            else pop(head);
+            f = false;
+        }
+        has_unvisited = false;
+        for (int i = 0; i < n; i++) {
+            // Если остались непосещенные вершины
+            if (a[i] == 0) {
+                has_unvisited = true;
+                x = i;
             }
         }
-    }
-    for (int i = 0; i < a.size(); i++) {
-        if (a[i] == 0) {
-            y = i;
-            a[y] = 1;
-            queue.push(y);
-            cout << ", " << y;
+    } while(has_unvisited);
+    cout << endl;
+
+    // Обход в ширину
+    Queue<int> queue;
+    a.assign(n, 0);
+    cout << "BFS: ";
+    do {
+        a[x] = 1;
+        queue.push(x);
+        cout << x << ' ';
+        while (!queue.empty()) {
+            x = queue.pop();
+            for (int i = 0; i < gr[x].size(); i++) {
+                if (a[gr[x][i]] == 0) {
+                    int y = gr[x][i];
+                    a[y] = 1;
+                    queue.push(y);
+                    cout << y << ' ';
+                }
+            }
         }
-    }
+        has_unvisited = false;
+        for (int i = 0; i < n; i++) {
+            // Если остались непосещенные вершины
+            if (a[i] == 0) {
+                has_unvisited = true;
+                x = i;
+            }
+        }
+    } while(has_unvisited);
     cout << endl;
 }
