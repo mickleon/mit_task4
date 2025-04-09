@@ -69,6 +69,51 @@ type Queue<type>::pop() {
     return x;
 }
 
+// Обход в глубину
+void dfs(int x, vector<vector<int>>gr, vector<bool> &a) {
+    stack *head = nullptr;
+    a[x] = 1;
+    push(head, x);
+    cout << x << ' ';
+    int y; bool f = false;
+    while (head != nullptr) {
+        x = head->inf;
+        for (int i = 0; i < gr[x].size(); i++) {
+            if (a[gr[x][i]] == 0) {
+                y = gr[x][i];
+                f = true;
+                break;
+            }
+        }
+        if (f) {
+            a[y] = 1;
+            push(head, y);
+            cout << y << ' ';
+        }
+        else pop(head);
+        f = false;
+    }
+}
+
+// Обход в ширину
+void bfs(int x, vector<vector<int>>gr, vector<bool> &a) {
+    Queue<int> queue;
+    a[x] = 1;
+    queue.push(x);
+    cout << x << ' ';    
+    while (!queue.empty()) {
+        x = queue.pop();
+        for (int i = 0; i < gr[x].size(); i++) {
+            if (a[gr[x][i]] == 0) {
+                int y = gr[x][i];
+                a[y] = 1;
+                queue.push(y);
+                cout << y << ' ';
+            }
+        }
+    }
+}
+
 int main() {
     // Инициализация графа
     int n = 7, x = 0;
@@ -78,74 +123,22 @@ int main() {
     gr[2] = {0, 5};
     gr[3] = {1};
     gr[4] = {0, 6};
-    gr[5] = {0, 2, 6};
+    gr[5] = {0, 2, 6};  
     gr[6] = {4, 5};
 
-    // Обход в глубину
-    stack *head = nullptr;
-    vector<int> a(n, 0);
-    bool has_unvisited;
+    vector<bool> a(n, 0);
     cout << "DFS: ";
-    do {
-        a[x] = 1;
-        push(head, x);
-        cout << x << ' ';
-        int y; bool f = false;
-        while (head != nullptr) {
-            x = head->inf;
-            for (int i = 0; i < gr[x].size(); i++) {
-                if (a[gr[x][i]] == 0) {
-                    y = gr[x][i];
-                    f = true;
-                    break;
-                }
-            }
-            if (f) {
-                a[y] = 1;
-                push(head, y);
-                cout << y << ' ';
-            }
-            else pop(head);
-            f = false;
-        }
-        has_unvisited = false;
-        for (int i = 0; i < n; i++) {
-            // Если остались непосещенные вершины
-            if (a[i] == 0) {
-                has_unvisited = true;
-                x = i;
-            }
-        }
-    } while(has_unvisited);
+    for (int i = 0; i < n; i++) {
+        if (!a[i])
+            dfs(i, gr, a);
+    }
     cout << endl;
-
-    // Обход в ширину
-    Queue<int> queue;
+    
     a.assign(n, 0);
     cout << "BFS: ";
-    do {
-        a[x] = 1;
-        queue.push(x);
-        cout << x << ' ';
-        while (!queue.empty()) {
-            x = queue.pop();
-            for (int i = 0; i < gr[x].size(); i++) {
-                if (a[gr[x][i]] == 0) {
-                    int y = gr[x][i];
-                    a[y] = 1;
-                    queue.push(y);
-                    cout << y << ' ';
-                }
-            }
-        }
-        has_unvisited = false;
-        for (int i = 0; i < n; i++) {
-            // Если остались непосещенные вершины
-            if (a[i] == 0) {
-                has_unvisited = true;
-                x = i;
-            }
-        }
-    } while(has_unvisited);
+    for (int i = 0; i < n; i++) {
+        if (!a[i])
+            bfs(i, gr, a);
+    }
     cout << endl;
 }
