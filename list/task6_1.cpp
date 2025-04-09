@@ -1,5 +1,4 @@
 #include <iostream>
-#include <ctime>
 
 using namespace std;
 
@@ -141,11 +140,27 @@ void List<type>::del_node(Node<type> *r) {
 template<typename type>
 void List<type>::print() {
     Node<type>* h = head;
-    while (h!= nullptr) {
+    while (h) {
         cout << h->inf << ' ';
         h = h->next;
     }
     cout << endl;
+}
+
+// Удаление первых нечетных элементов с концов
+template<typename type>
+void result(List<type> &list) {
+    Node<type> *l = list.getHead();
+    Node<type> *r = list.getTail();
+    // Шагаем левым и правым указателем вглубь, пока не упремся друг в друга
+    // или в нечетные элементы
+    while (l != r && (l->inf%2 == 0 || r->inf%2 == 0)) {
+        if (l->inf%2 == 0) l = l->next;
+        if (r->inf%2 == 0 && l != r) r = r->prev;
+    }
+    // Удаляем
+    if (l != r && l->inf%2) list.del_node(l);
+    if (r->inf%2) list.del_node(r);
 }
 
 int main() {
@@ -159,17 +174,7 @@ int main() {
         list.push_back(x);
     }
 
-    // Шагаем левым и правым указателем вглубь,
-    // пока не упремся друг в друга или в нечетные элементы
-    Node<int> *l = list.getHead();
-    Node<int> *r = list.getTail();
-    while (l != r && (l->inf%2 == 0 || r->inf%2 == 0)) {
-        if (l->inf%2 == 0) l = l->next;
-        if (r->inf%2 == 0 && l != r) r = r->prev;
-    }
-    // Удаляем
-    if (l != r && l->inf%2) list.del_node(l);
-    if (r->inf%2) list.del_node(r);
+    result(list);
 
     list.print(); 
 }

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <ctime>
 
 using namespace std;
 
@@ -137,9 +136,22 @@ void List<type>::del_node(Node<type> *r) {
     delete r;
 }
 
+// Вывод
+template<typename type>
+void List<type>::print() {
+    Node<type>* h = head;
+    while (h) {
+        cout << h->inf << ' ';
+        h = h->next;
+    }
+    cout << endl;
+}
+
+
 // Вычисляед среднее арифметическое элементов после заданного
-float average(Node<int> *r) {
-    int sum = 0, n = 0;
+template<typename type>
+float average(Node<type> *r) {
+    double sum = 0; int n = 0;
     while (r->next != nullptr) {
         r = r->next;
         n++;
@@ -148,15 +160,20 @@ float average(Node<int> *r) {
     return (float)sum/(float)n;
 }
 
-// Вывод
 template<typename type>
-void List<type>::print() {
-    Node<type>* h = head;
-    while (h!= nullptr) {
-        cout << h->inf << ' ';
-        h = h->next;
+void result(List<type> &list) {
+    Node<type> *h = list.getHead();
+    while(h) {
+        // Если элемент не удовлетворяет улосвию задачи
+        if (h->inf < average(h)) {
+            // Удаляем и переходим к следующему
+            Node<type> *r = h;
+            h = h->next;
+            list.del_node(r);
+        }
+        // Иначе просто переходим к следущему
+        else h = h->next;
     }
-    cout << endl;
 }
 
 int main() {
@@ -170,18 +187,7 @@ int main() {
         list.push_back(x);
     }
 
-    // Удаление элементов таких, что среднее арифметческое элементов
-    // после них меньше самого числа
-    Node<int> *h = list.getHead(), *r;
-    int s;
-    while(h != nullptr) {
-        if (h->inf < average(h)) {
-            r = h;
-            h = h->next;
-            list.del_node(r);
-        }
-        else h =h->next;
-    }
+    result(list);
 
     list.print();
 }

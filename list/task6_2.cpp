@@ -1,5 +1,4 @@
 #include <iostream>
-#include <ctime>
 
 using namespace std;
 
@@ -141,7 +140,7 @@ void List<type>::del_node(Node<type> *r) {
 template<typename type>
 void List<type>::print() {
     Node<type>* h = head;
-    while (h!= nullptr) {
+    while (h) {
         cout << h->inf << ' ';
         h = h->next;
     }
@@ -158,6 +157,27 @@ bool isPrime(int n) {
     return f;
 }
 
+// Циклический сдвиг до первого составного элемента
+void result(List<int> &list, int n) {
+    Node<int> *h = list.getHead();
+    Node<int> *t = list.getTail();
+    while (isPrime(h->inf)) {
+        Node<int>* next = h->next; 
+        // Расцепляем элемент и следующий за ним
+        next->prev = nullptr;
+        h->next = nullptr;
+        // Сцепляем хвост и элемент
+        h->prev = list.getTail();
+        h->prev->next = h;
+        // Заменяем хвост и голову списка
+        list.setTail(h);
+        list.setHead(next);
+
+        if (h == t) break;
+        h = list.getHead();
+    }
+}
+
 int main() {
     List<int> list;
     // Ввод
@@ -169,18 +189,7 @@ int main() {
         list.push_back(x);
     }
 
-    // Циклический сдвиг до первого составного элемента
-    Node<int> *h = list.getHead();
-    for (int i = 0; i < n && isPrime(h->inf); i++) {
-        Node<int>* next = h->next;    
-        next->prev = nullptr;
-        h->next = nullptr;
-        h->prev = list.getTail();
-        h->prev->next = h;
-        list.setTail(h);
-        list.setHead(next);
-        h = list.getHead();
-    }
+    result(list, n);
 
     list.print();
 }
