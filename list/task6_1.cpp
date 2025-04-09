@@ -31,6 +31,7 @@ class List {
         Node<type> *getTail() {return tail;}
         void setHead(Node<type> *h) {head = h;}
         void setTail(Node<type> *t) {tail = t;}
+        void print();
         ~List() {
             while (head) {
                 Node<type>* p = head;
@@ -136,6 +137,17 @@ void List<type>::del_node(Node<type> *r) {
     delete r;
 }
 
+// Вывод
+template<typename type>
+void List<type>::print() {
+    Node<type>* h = head;
+    while (h!= nullptr) {
+        cout << h->inf << ' ';
+        h = h->next;
+    }
+    cout << endl;
+}
+
 int main() {
     List<int> list;
     // Ввод
@@ -159,13 +171,7 @@ int main() {
     if (l != r && l->inf%2) list.del_node(l);
     if (r->inf%2) list.del_node(r);
 
-    // Вывод
-    l = list.getHead();
-    while (l != nullptr) {
-        cout << l->inf << ' ';
-        l = l->next;
-    }
-    cout << endl;
+    list.print(); 
 }
 // 12
 // 8 2 1 6 8 8 1 2 2 8 2 1

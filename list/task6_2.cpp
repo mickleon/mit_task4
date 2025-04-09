@@ -31,6 +31,7 @@ class List {
         Node<type> *getTail() {return tail;}
         void setHead(Node<type> *h) {head = h;}
         void setTail(Node<type> *t) {tail = t;}
+        void print();
         ~List() {
             while (head) {
                 Node<type>* p = head;
@@ -136,6 +137,17 @@ void List<type>::del_node(Node<type> *r) {
     delete r;
 }
 
+// Вывод
+template<typename type>
+void List<type>::print() {
+    Node<type>* h = head;
+    while (h!= nullptr) {
+        cout << h->inf << ' ';
+        h = h->next;
+    }
+    cout << endl;
+}
+
 bool isPrime(int n) {
     bool f = true; 
     for(int j = 2; j * j <= n; j += 1) 
@@ -170,13 +182,7 @@ int main() {
         h = list.getHead();
     }
 
-    // Вывод
-    h = list.getHead();
-    while (h != nullptr) {
-        cout << h->inf << ' ';
-        h = h->next;
-    }
-    cout << endl;
+    list.print();
 }
 // 11
 // 2 3 5 4 8 6 9 1 4 5 7

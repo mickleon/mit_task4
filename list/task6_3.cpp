@@ -31,6 +31,7 @@ class List {
         Node<type> *getTail() {return tail;}
         void setHead(Node<type> *h) {head = h;}
         void setTail(Node<type> *t) {tail = t;}
+        void print();
         ~List() {
             while (head) {
                 Node<type>* p = head;
@@ -147,6 +148,17 @@ float average(Node<int> *r) {
     return (float)sum/(float)n;
 }
 
+// Вывод
+template<typename type>
+void List<type>::print() {
+    Node<type>* h = head;
+    while (h!= nullptr) {
+        cout << h->inf << ' ';
+        h = h->next;
+    }
+    cout << endl;
+}
+
 int main() {
     List<int> list;
     // Ввод
@@ -171,13 +183,7 @@ int main() {
         else h =h->next;
     }
 
-    // Вывод
-    h = list.getHead();
-    while (h != nullptr) {
-        cout << h->inf << ' ';
-        h = h->next;
-    }
-    cout << endl;
+    list.print();
 }
 // 9 
 // 5 2 9 1 3 7 1 2 9
