@@ -147,32 +147,27 @@ void List<type>::print() {
     cout << endl;
 }
 
-
-// Вычисляед среднее арифметическое элементов после заданного
-template<typename type>
-float average(Node<type> *r) {
-    double sum = 0; int n = 0;
-    while (r->next != nullptr) {
-        r = r->next;
-        n++;
-        sum += r->inf;
-    }
-    return (float)sum/(float)n;
-}
-
+// Удаление элементов, меньших среднего арифметического элементов, следующих за ним
 template<typename type>
 void result(List<type> &list) {
-    Node<type> *h = list.getHead();
-    while(h) {
-        // Если элемент не удовлетворяет улосвию задачи
-        if (h->inf < average(h)) {
-            // Удаляем и переходим к следующему
-            Node<type> *r = h;
-            h = h->next;
+    // Идем с хвоста
+    Node<int> *p = list.getTail()->prev;
+    // С хвоста начинаем подсчет суммы
+    type s = list.getTail()->inf;
+    type k = 1;
+    while (p) {
+        // Среднее арифметическое хвоста
+        double sr = (double)s / k;
+        s += p->inf;
+        k++;
+        // Удаление элемента, не удовлетворяющего условию задачи
+        if (p->inf < sr) {
+            Node<type>* r = p;
+            p = p->prev;
             list.del_node(r);
         }
-        // Иначе просто переходим к следущему
-        else h = h->next;
+        // Дальше к голове
+        else p = p->prev;
     }
 }
 
