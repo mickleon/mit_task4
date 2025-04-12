@@ -51,7 +51,7 @@ class Queue {
 template<typename type>
 void Queue<type>::push(type value) {
     Node<type> *p = new Node<type>(value);
-    if (tail == nullptr) head = tail = p;
+    if (!tail) head = tail = p;
     else {
         tail->next = p;
         tail = p;
@@ -75,23 +75,20 @@ void dfs(int x, vector<vector<int>>gr, vector<bool> &a) {
     a[x] = 1;
     push(head, x);
     cout << x << ' ';
-    int y; bool f = false;
-    while (head != nullptr) {
+    while (head) {
+        bool f = 0;
         x = head->inf;
         for (int i = 0; i < gr[x].size(); i++) {
             if (a[gr[x][i]] == 0) {
-                y = gr[x][i];
-                f = true;
+                int y = gr[x][i];
+                f = 1;
+                a[y] = 1;
+                push(head, y);
+                cout << y << ' ';
                 break;
             }
         }
-        if (f) {
-            a[y] = 1;
-            push(head, y);
-            cout << y << ' ';
-        }
-        else pop(head);
-        f = false;
+        if (!f) pop(head);
     }
 }
 
@@ -115,30 +112,52 @@ void bfs(int x, vector<vector<int>>gr, vector<bool> &a) {
 }
 
 int main() {
-    // Инициализация графа
-    int n = 7, x = 0;
-    vector<vector<int>> gr(n);
-    gr[0] = {1, 2, 4, 5};
-    gr[1] = {0, 3};
-    gr[2] = {0, 5};
-    gr[3] = {1};
-    gr[4] = {0, 6};
-    gr[5] = {0, 2, 6};  
-    gr[6] = {4, 5};
+    int n, m, x;
+    cout << "Number of nodes: ";
+    cin >> n;
+    cout << "Number of edges: ";
+    cin >> m;
+    vector<vector<int>> gr;
+    gr.assign(n, {});
+    int u, v;
+    cout << "Edges (from 0 index):\n";
+    for (int i = 0; i < m; i++) {
+        cin >> u >> v;
+        gr[u].push_back(v);
+        gr[v].push_back(u);
+    }
+    cout << "Start from: ";
+    cin >> x;
 
     vector<bool> a(n, 0);
     cout << "DFS: ";
+    // Обходим с вершины x
+    dfs(x, gr, a);
+    // Дообходим, если остались непосещенные
     for (int i = 0; i < n; i++) {
-        if (!a[i])
-            dfs(i, gr, a);
+        if (!a[i]) dfs(i, gr, a);
     }
     cout << endl;
     
     a.assign(n, 0);
     cout << "BFS: ";
+    // Обходим с вершины x
+    bfs(x, gr, a);
+    // Дообходим, если остались непосещенные
     for (int i = 0; i < n; i++) {
-        if (!a[i])
-            bfs(i, gr, a);
+        if (!a[i]) bfs(i, gr, a);
     }
     cout << endl;
 }
+// Граф из лекции
+/*
+7 8
+0 1
+0 2
+0 4
+0 5
+1 3
+2 5
+4 6
+5 6
+*/
