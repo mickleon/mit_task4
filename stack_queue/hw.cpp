@@ -95,14 +95,14 @@ void bfs(pair<int, int> x, pair<int, int> end, vector<int> &p) {
     queue.push(x);
     while (!queue.empty()) {
         x = queue.pop();
+        // Если дошли до нужной, завершаем обход
+        if (x == end) break;
         // Перебираем все ходы
         for (int i = 0; i < 8; i++) {
             pair<int, int> y = {x.first + dx[i], x.second + dy[i]};
             if (in(y)) {
                 if (a[y.first][y.second] == 0) {
                     p[coord_to_num(y)] = coord_to_num(x);
-                    // Если дошли до нужной, завершаем обход
-                    if (y == end) break;
                     a[y.first][y.second] = 1;
                     queue.push(y);
                 }
