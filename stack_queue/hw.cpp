@@ -49,6 +49,28 @@ type Queue<type>::pop() {
 // Ширина и высота шахматной доски
 int n = 8;
 
+// Принимает строку с клеткой, возвращает пару координат
+pair<int, int> ceil_to_coord(string s) {
+    pair <int, int> p;
+    char c = s[0];
+    if (65 <= c && c <= 72) p.first = c - 65;
+    if (97 <= c && c <= 104) p.first = c - 97;
+    p.second = s[1] - 49;
+    return p;
+}
+
+// Принимает номер клетки, возвращает строку
+// (всего 64 клетки, нумерация с 0 до 63 слева направо, снизу вверх)
+string num_to_ceil(int c) {
+    char x, y;
+    x = c%n + 65;
+    y = c/n + 49;
+    string s;
+    s += x;
+    s += y;
+    return s;
+} 
+
 // Принимает пару координат, возвращает номер клетки
 int coord_to_num(pair<int, int> x) {
     return x.second*n + x.first;
@@ -65,7 +87,7 @@ void bfs(pair<int, int> x, pair<int, int> end, vector<int> &p) {
     // Матрица посещённых клеток
     vector<vector<bool>> a;
     a.assign(n, vector<bool>(n, 0));
-    // Все возможные смещения по осям ходов коня
+    // Все возможные смещения ходов коня по осям
     int dx[]{-2, -2, -1, -1, 1, 1, 2, 2};
     int dy[]{-1, 1, -2, 2, -2, 2, -1, 1};
     Queue<pair<int, int>> queue;
@@ -90,11 +112,13 @@ void bfs(pair<int, int> x, pair<int, int> end, vector<int> &p) {
 }
 
 int main() {
-    pair<int, int> start, end;
+    string s;
     cout << "Start: ";
-    cin >> start.first >> start.second;
+    cin >> s;
+    pair<int, int> start = ceil_to_coord(s);
     cout << "End: ";
-    cin >> end.first >> end.second;
+    cin >> s;
+    pair<int, int> end = ceil_to_coord(s);
 
     // Вектор вида: 
     // индекс - номер клетки,
@@ -110,7 +134,7 @@ int main() {
     // мы из неё начали обход)
     int x = coord_to_num(start);
     while (x != -1) {
-        cout << x << ' ';
+        cout << num_to_ceil(x) << ' ';
         x = p[x];
     }
     cout << endl;
