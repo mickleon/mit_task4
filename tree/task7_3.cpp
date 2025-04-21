@@ -1,4 +1,7 @@
 #include <iostream>
+#include <vector>
+#include <cmath>
+#include <iomanip>
 
 using namespace std;
 
@@ -36,15 +39,6 @@ void insert(Tree *&tr, int value) {
             }
             else break;
         }
-    }
-}
-
-// Прямой обход
-void preorder(Tree *tr) {
-    if (tr) {
-        cout << tr->inf << ' ';
-        preorder(tr->left);
-        preorder(tr->right);
     }
 }
 
@@ -116,17 +110,84 @@ void erase(Tree *&tr, Tree *&x) {
     }
 }
 
+// Обход с подсчетом высоты дерева
+void max_height(Tree *x, int &max, int depth = 0) {
+    if (depth > max) max = depth;
+    if (x->left) max_height(x->left, max, depth + 1);
+    if (x->right) max_height(x->right, max, depth + 1);
+}
+
+// Обход с подсчетом глубины и смещения узла от левого края уровня
+void deepness(Tree *x, vector<vector<pair<int, int>>> &d, int deep = 0, int count = 1) {
+    d[deep].push_back({x->inf, count - (1<<deep)});
+    if (x->left) deepness(x->left, d, deep + 1, count*2);
+    if (x->right) deepness(x->right, d, deep + 1, count*2+1);
+}
+
+// Вывод символа n раз
+void print(char c, int n){
+    for (int i = 0; i < n; i++) cout << c;
+}
+
+// Вывод дерева
+void print_tree(Tree *&tr, int r = 1){
+    // Высота дерева
+    int height = 0;
+    max_height(tr, height);
+    // Подсчетом глубины и номера каждого узла
+    vector<vector<pair<int, int>>> d(height + 1);
+    deepness(tr, d);
+    // Пробел в начале каждого уровня
+    int init_space = (r + 1)*(1<<(height - 1));
+    // Перебор уровней
+    for (int depth = 0; depth <= height; depth++) {
+        print(' ', init_space - r);
+        int prev_offset = 0;
+        // Пробел между узлами на этом уровне
+        int space = init_space*2 - r;
+        if (space == 0) space = 1;
+        // Перебор узлов на уровне
+        for (auto &node : d[depth]) {
+            // Расчет отступа до узла, если дерево неполное
+            print(' ', (space + r)*(node.second - prev_offset));
+            // Вывод узла
+            cout << setw(r) << setfill(' ') << node.first;
+            // Пробел после узла
+            print(' ', space);
+            // Сохранение отсутпа для расчета полседующих
+            prev_offset = node.second + 1;
+        }
+        cout << endl;
+        init_space /= 2;
+    }
+}
+
+// Симметричный обход
+void inorder(Tree *tr) {
+    if (tr) {
+        inorder(tr->left);
+        cout << tr->inf << ' ';
+        inorder(tr->right);
+    }
+}
+
+
 int main() {
     // Ввод
     Tree *tr = nullptr;
     int n;
     cout << "n = ";
     cin >> n;
-    int x;
+    int x, max = 0;
     for (int i = 0; i < n; i++) {
         cin >> x;
+        if (x > max) max = x;
         insert(tr, x);
     }
+    // Максимальная разрядность узлов
+    int r = log10(max) + 1;
+
+    print_tree(tr, r);
 
     cout << "X = ";
     cin >> x;
@@ -139,9 +200,7 @@ int main() {
             erase(tr, y->parent);
         }
     }
-    
-    preorder(tr);
-    cout << endl;
+    print_tree(tr, r);
 }
 // 10
 // 5 3 7 1 9 4 2 8 6 0
