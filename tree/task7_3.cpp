@@ -55,70 +55,49 @@ Tree *min(Tree *&tr) {
     return min(tr->left);
 }
 
-// Поиск следующего по симметричному обходу
-Tree *next(Tree *&x) {
-    if (x->right) return min(x->right);
-    Tree *y = x->parent;
-    while (y && x == y->right) {
-        x = y;
-        y = y->parent;
-    }
-    return y;
-}
-
 // Удаление элемента из дерева
 void erase(Tree *&tr, Tree *&x) {
     Tree *p = x->parent;
-    if (!p) tr = nullptr; // Дерево содержит 1 узел
-    else if (!x->left && !x->right) { // Нет детей
-        if (p->left == x) p->left = nullptr;
-        if (p->right == x) p->right = nullptr;
+    if (!x->left && !x->right) { // Нет детей
+        if (!p) tr = nullptr; // Дерево из одного элемента
+        else {
+            if (p->left == x) p->left = nullptr;
+            else if (p->right == x) p->right = nullptr;
+        }
         delete x;
     }
     else if (!x->left || !x->right) { // 1 ребенок
-        if (!p) {
-            if (x->right) tr = x->right;
-            else tr = x->left;
-            tr->parent = nullptr;
-        }       
+        Tree *child = x->left ? x->left : x->right;
+        if (!p) tr = child; // Корень
         else {
-            if (x->right) {
-                if (x == p->left) p->left = x->right;
-                else p->right = x->right;
-                x->right->parent = p;
-            }
-            else {
-                if (x == p->left) p->left = x->left;
-                else p->right = x->left;
-                x->left->parent = p;
-            }
+            if (p->left == x) p->left = child;
+            else if (p->right == x) p->right = child;
         }
+        child->parent = p;
         delete x;
     }
     else { // 2 ребенка 
-        Tree *succ = next(x);
+        Tree *succ = min(x->right);
         x->inf = succ->inf;
-        if (succ->parent->left == succ) {
+        if (succ->parent->left == succ) 
             succ->parent->left = succ->right;
-            if (succ->right) succ->right->parent = succ->parent;
-        }
-        else {
+        else
             succ->parent->right = succ->right;
-            if (succ->right) succ->right->parent = succ->parent;
-        }
+        if (succ->right)
+            succ->right->parent = succ->parent;
         delete succ;
     }
 }
 
 // Обход с подсчетом высоты дерева
-void max_height(Tree *x, int &max, int depth = 0) {
+void max_height(Tree *&x, int &max, int depth = 0) {
     if (depth > max) max = depth;
     if (x->left) max_height(x->left, max, depth + 1);
     if (x->right) max_height(x->right, max, depth + 1);
 }
 
 // Обход с подсчетом глубины и смещения узла от левого края уровня
-void deepness(Tree *x, vector<vector<pair<int, int>>> &d, int deep = 0, int count = 1) {
+void deepness(Tree *&x, vector<vector<pair<int, int>>> &d, int deep = 0, int count = 1) {
     d[deep].push_back({x->inf, count - (1<<deep)});
     if (x->left) deepness(x->left, d, deep + 1, count*2);
     if (x->right) deepness(x->right, d, deep + 1, count*2+1);
@@ -162,15 +141,14 @@ void print_tree(Tree *&tr, int r = 1){
     }
 }
 
-// Симметричный обход
-void inorder(Tree *tr) {
+// Прямой обход
+void preorder(Tree *&tr) {
     if (tr) {
-        inorder(tr->left);
         cout << tr->inf << ' ';
-        inorder(tr->right);
+        preorder(tr->left);
+        preorder(tr->right);
     }
 }
-
 
 int main() {
     // Ввод
@@ -194,13 +172,16 @@ int main() {
     Tree *y = find(tr, x);
 
     // Удаление деда, если он существует
-    if (y->parent) {
+    if (y && y->parent) {
         y = y->parent;
         if (y->parent) {
-            erase(tr, y->parent);
+            Tree *grandparent = y->parent;
+            erase(tr, grandparent);
         }
     }
     print_tree(tr, r);
 }
-// 10
-// 5 3 7 1 9 4 2 8 6 0
+/*
+18
+9 6 17 3 8 16 20 1 4 7 12 19 21 2 5 11 14 18
+*/

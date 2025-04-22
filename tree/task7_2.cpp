@@ -43,14 +43,14 @@ void insert(Tree *&tr, int value) {
 }
 
 // Обход с подсчетом высоты дерева
-void max_height(Tree *x, int &max, int depth = 0) {
+void max_height(Tree *&x, int &max, int depth = 0) {
     if (depth > max) max = depth;
     if (x->left) max_height(x->left, max, depth + 1);
     if (x->right) max_height(x->right, max, depth + 1);
 }
 
 // Обход с подсчетом глубины и смещения узла от левого края уровня
-void deepness(Tree *x, vector<vector<pair<int, int>>> &d, int deep = 0, int count = 1) {
+void deepness(Tree *&x, vector<vector<pair<int, int>>> &d, int deep = 0, int count = 1) {
     d[deep].push_back({x->inf, count - (1<<deep)});
     if (x->left) deepness(x->left, d, deep + 1, count*2);
     if (x->right) deepness(x->right, d, deep + 1, count*2+1);
@@ -94,13 +94,13 @@ void print_tree(Tree *&tr, int r = 1){
     }
 }
 
-// Симметричный обход
-void inorder(Tree *tr) {
+// Прямой обход
+void preorder(Tree *&tr) {
     if (tr) {
-        inorder(tr->left);
         // Вывести, если есть 2 ребенка
         if (tr->left && tr->right) cout << tr->inf << ' ';
-        inorder(tr->right);
+        preorder(tr->left);
+        preorder(tr->right);
     }
 }
 
@@ -121,8 +121,10 @@ int main() {
 
     print_tree(tr, r);
     cout << "Have two children: ";
-    inorder(tr);
+    preorder(tr);
     cout << endl;
 }
-// 10
-// 5 3 7 1 9 4 2 8 6 0
+/*
+18
+9 6 17 3 8 16 20 1 4 7 12 19 21 2 5 11 14 18
+*/
