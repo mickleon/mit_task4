@@ -332,6 +332,15 @@ Tree* find(Tree*& tr, int value) {
     return find(tr->right, value);
 }
 
+// Симметричный обход
+void inorder(Tree *tr) {
+    if (tr) {
+        inorder(tr->left);
+        cout << tr->inf << ' ';
+        inorder(tr->right);
+    }
+}
+
 // Обход с подсчетом высоты дерева
 void max_height(Tree*& x, int& max, int depth = 0) {
     if (depth > max) max = depth;
@@ -377,6 +386,16 @@ void print_tree(Tree*& tr, int r = 1) {
     }
 }
 
+// Подсчет узлов, содержащих только левого потомка
+void preorder(Tree *tr, int &count_left) {
+    if (tr) {
+        if (tr->left && !tr->right)
+            count_left++;
+        preorder(tr->left, count_left);
+        preorder(tr->right, count_left);
+    }
+}
+
 int main() {
     Tree* tr = nullptr;
     int n, x, max = 0;
@@ -388,11 +407,10 @@ int main() {
     }
     int r = log10(max) + 1;
     print_tree(tr, r);
-    while (true) {
-        cin >> x;
-        delete_one(tr, find(tr, x));
-        print_tree(tr, r);
-    }
+    // Выполнение задания 13
+    int count_left = 0;
+    preorder(tr, count_left);
+    cout << "Have only left child: " << count_left << endl;
 }
 /*
 18
