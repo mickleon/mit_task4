@@ -4,6 +4,7 @@
 
 using namespace std;
 
+// Структура дерева
 struct Tree {
     int inf;
     Tree* parent;
@@ -31,7 +32,7 @@ void left_rotate(Tree*& tr, Tree* x) {
     x->parent = y;
 }
 
-// Левый поворот дерева относительно узла x
+// Правый поворот дерева относительно узла x
 void right_rotate(Tree*& tr, Tree* x) {
     if (!x || !x->left) return;
     Tree* y = x->left;
@@ -51,6 +52,7 @@ void right_rotate(Tree*& tr, Tree* x) {
     x->parent = y;
 }
 
+// Создание корня дерева
 Tree* root(int x) {
     Tree* n = new Tree;
     n->inf = x;
@@ -60,6 +62,7 @@ Tree* root(int x) {
     return n;
 }
 
+// Создание узла дерева
 Tree* node(Tree* prev, int x) {
     Tree* n = new Tree;
     n->inf = x;
@@ -74,6 +77,7 @@ Tree* grandparent(Tree* x) {
     return x->parent->parent;
 }
 
+// Возвращает дядю
 Tree* uncle(Tree* x) {
     Tree* g = grandparent(x);
     if (!g) return nullptr;
@@ -81,6 +85,7 @@ Tree* uncle(Tree* x) {
     else return g->left;
 }
 
+// Возвращает брата
 Tree* sibling(Tree* x) {
     if (x && x->parent) {
         if (x == x->parent->left)
@@ -91,23 +96,27 @@ Tree* sibling(Tree* x) {
     return nullptr;
 }
 
-void insert_case_1(Tree*& tr, Tree* x); // x корень
-void insert_case_2(Tree*& tr, Tree* x); // Родитель черный
-void insert_case_3(Tree*& tr, Tree* x); // Родитель и дядя красные
-void insert_case_4(Tree*& tr, Tree* x); // Родитель красный, дядя черный, родитель и ребенок противоположного цвета своих родителей
-void insert_case_5(Tree*& tr, Tree* x); // Родитель красный, дядя черный, родитель и ребенок одинакового цвета своих родителей
+void insert_case_1(Tree*& tr, Tree* x);
+void insert_case_2(Tree*& tr, Tree* x);
+void insert_case_3(Tree*& tr, Tree* x);
+void insert_case_4(Tree*& tr, Tree* x);
+void insert_case_5(Tree*& tr, Tree* x);
 
+// Функции вставки
+// Корень
 void insert_case_1(Tree*& tr, Tree* x) {
     if (!x->parent) x->color = 'b';
     else insert_case_2(tr, x);
 }
 
+// Родитель черный
 void insert_case_2(Tree*& tr, Tree* x) {
     if (x->parent->color == 'r')
         insert_case_3(tr, x);
     else return;
 }
 
+// Родитель и дядя красные
 void insert_case_3(Tree*& tr, Tree* x) {
     Tree* g = grandparent(x);
     Tree* u = uncle(x);
@@ -120,6 +129,7 @@ void insert_case_3(Tree*& tr, Tree* x) {
     else insert_case_4(tr, x);
 }
 
+// Родитель красный, дядя черный, родитель и ребенок противоположного цвета своих родителей
 void insert_case_4(Tree*& tr, Tree* x) {
     Tree* g = grandparent(x);
     Tree* p = x->parent;
@@ -134,6 +144,7 @@ void insert_case_4(Tree*& tr, Tree* x) {
     insert_case_5(tr, x);
 }
 
+// Родитель красный, дядя черный, родитель и ребенок одинакового цвета своих родителей
 void insert_case_5(Tree*& tr, Tree* x) {
     Tree* g = grandparent(x);
     Tree* p = x->parent;
@@ -168,13 +179,15 @@ void insert(Tree*& tr, int x) {
     insert_case_1(tr, n);
 }
 
-void delete_case_1(Tree*& tr, Tree* x); // Корень
-void delete_case_2(Tree*& tr, Tree* x); // Узел и родитель черные, брат красный
-void delete_case_3(Tree*& tr, Tree* x); // Узел, родитель, брат, племянники черные
-void delete_case_4(Tree*& tr, Tree* x); // Узел, брат, племянники черные, родитель красный
-void delete_case_5(Tree*& tr, Tree* x); // Брат черный, прилежащий племянник красный, противолежащий черный
-void delete_case_6(Tree*& tr, Tree* x); // Брат черный, прилежащий племянник черный, противолежащий красный
+// Функции удаления
+void delete_case_1(Tree*& tr, Tree* x);
+void delete_case_2(Tree*& tr, Tree* x);
+void delete_case_3(Tree*& tr, Tree* x);
+void delete_case_4(Tree*& tr, Tree* x);
+void delete_case_5(Tree*& tr, Tree* x);
+void delete_case_6(Tree*& tr, Tree* x);
 
+// Корень
 void delete_case_1(Tree*& tr, Tree* x) {
     if (!x->parent) {
         if (x->left) tr = x->left;
@@ -183,6 +196,7 @@ void delete_case_1(Tree*& tr, Tree* x) {
     else delete_case_2(tr, x);
 }
 
+// Узел и родитель черные, брат красный
 void delete_case_2(Tree*& tr, Tree* x) {
     Tree* s = sibling(x);
     if (s && s->color == 'r') {
@@ -194,6 +208,7 @@ void delete_case_2(Tree*& tr, Tree* x) {
     delete_case_3(tr, x);
 }
 
+// Узел, родитель, брат, племянники черные
 void delete_case_3(Tree*& tr, Tree* x) {
     Tree* s = sibling(x);
     if (x->parent->color == 'b' && 
@@ -206,6 +221,7 @@ void delete_case_3(Tree*& tr, Tree* x) {
     else delete_case_4(tr, x);
 }
 
+// Узел, брат, племянники черные, родитель красный
 void delete_case_4(Tree*& tr, Tree* x) {
     Tree* s = sibling(x);
     if (x->parent->color == 'r' && 
@@ -218,6 +234,7 @@ void delete_case_4(Tree*& tr, Tree* x) {
     else delete_case_5(tr, x);
 }
 
+// Брат черный, прилежащий племянник красный, противолежащий черный
 void delete_case_5(Tree*& tr, Tree* x) {
     Tree* s = sibling(x);
     if (s && s->color == 'b') {
@@ -239,6 +256,7 @@ void delete_case_5(Tree*& tr, Tree* x) {
     delete_case_6(tr, x);
 }
 
+// Брат черный, прилежащий племянник черный, противолежащий красный
 void delete_case_6(Tree*& tr, Tree* x) {
     Tree* s = sibling(x);
     Tree* p = x->parent;
@@ -254,6 +272,7 @@ void delete_case_6(Tree*& tr, Tree* x) {
     }
 }
 
+// Заменяет узел на его ребенка
 void replace(Tree*& tr, Tree* x) {
     Tree* p = x->parent;
     Tree* ch = x->left ? x->left : x->right;
@@ -306,6 +325,7 @@ void delete_one(Tree*& tr, Tree* x) {
     delete x;
 }
 
+// Поиск узла по значению
 Tree* find(Tree*& tr, int value) {
     if (!tr || tr->inf == value) return tr;
     if (value < tr->inf) return find(tr->left, value);
