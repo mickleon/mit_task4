@@ -24,24 +24,24 @@ void preorder(Tree *tr) {
 }
 
 // Обратынй обход (c подсчетом результата)
-void postorder(Tree *tr, stack<int> &a) {
+void postorder(Tree *tr, stack<float> &a) {
     if (tr) {
         postorder(tr->left, a);
         postorder(tr->right, a);
         cout << tr->inf;
         if (isdigit(tr->inf)){
-            int n = tr->inf - '0';
+            float n = tr->inf - '0';
             a.push(n);
         }
         else{
-            int b = a.top();
+            float b = a.top();
             a.pop();
-            int c = a.top();
+            float c = a.top();
             a.pop();
-            if(tr->inf == '+') a.push((int)b + (int)c);
-            if(tr->inf == '-') a.push((int)c - (int)b);
-            if(tr->inf == '*') a.push((int)b * (int)c);
-            if(tr->inf == '/') a.push((int)c / (int)b);
+            if(tr->inf == '+') a.push((float)b + (float)c);
+            if(tr->inf == '-') a.push((float)c - (float)b);
+            if(tr->inf == '*') a.push((float)b * (float)c);
+            if(tr->inf == '/') a.push((float)c / (float)b);
         }
     }
 }
@@ -99,7 +99,8 @@ int main() {
         }
         insert(tr, *it);
     }
-    stack<int> a;
+    // float нужен, если в результате деления получается дробное число
+    stack<float> a;
     cout << "Prefix form:  ";
     preorder(tr);
     cout << "\nPostfix form: ";
