@@ -8,3 +8,13 @@ Subbotin Manager 23.08.2002 2 89922
 Myshkin General-manager 15.02.1985 10 260456
 Vodkin Watchman 13.05.1980 7 73148
 Puchkov Cashier 30.01.2003 8 89107
+Ballin Senior-developer 22.06.1992 4 107565
+Sosin Middle-develope 08.05.1999 4 87492
+Sidorov Junior-developer 29.04.1976 6 106400
+Klimov Clean-manager 02.10.1981 2 51852
+Dmitrovskiy Deputy-director 02.07.2001 8 99262
+Perovskiy Cashier 08.05.1996 10 83762
+Domovoy Cook 21.06.1984 6 55323
+Glazin Clean-manager 23.05.1989 4 92017
+Kuzneczov Cook 15.04.1976 1 93577
+Belkin Security 18.11.1984 4 62620
