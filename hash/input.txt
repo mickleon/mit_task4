@@ -1,0 +1,10 @@
+Ivanov Senior-developer 23.03.1993 5 134023
+Petrov Middle-developer 02.09.2001 3 84368
+Zazin Manager 31.03.2001 3 85752
+Kotovskiy Junior-developer 03.12.2003 1 56809
+Nechaev Team-lead 12.06.2000 7 120275
+Jukov Deputy-director 09.01.1988 1 103003
+Subbotin Manager 23.08.2002 2 89922
+Myshkin General-manager 15.02.1985 10 260456
+Vodkin Watchman 13.05.1980 7 73148
+Puchkov Cashier 30.01.2003 8 89107
