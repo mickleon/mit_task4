@@ -96,13 +96,13 @@ void List<type>::del_node(Node<type>* r) {
     delete r;
 }
 
-int m = 4;
+int m = 8;
 double a = (sqrt(5) - 1) / 2;
 vector<List<People*>> hash_table(m);
 
 // Хэш-функция (метод умножения)
 int h(int x) {
-    int k = (double)m * ((double)x * a - floor((double)x * a));
+    int k = m*(x*a - int(x*a));
     return k;
 }
 
@@ -142,7 +142,7 @@ void delete_people(int x) {
     int k = h(x);
     Node<People*>* h = hash_table[k].getHead();
     while (h) {
-        if (h->inf->dateOfBirth.y == x) { // По гоуд рождения
+        if (h->inf->dateOfBirth.y == x) { // По году рождения
             Node<People*>* p = h;
             h = h->next;
             hash_table[k].del_node(p);
@@ -159,8 +159,15 @@ void print_table() {
         Node<People*>* h = hash_table[i].getHead();
         cout << i << ": ";
         while (h) {
-            cout << h->inf->surname << ' ';
-            h = h->next;
+            cout << h->inf->surname << ' ' << h->inf->dateOfBirth.y;
+            if (h->next) {
+                cout << ", ";
+                h = h->next;
+            }
+            else {
+                cout << '.';
+                break;
+            }
         }
         cout << endl;
     }

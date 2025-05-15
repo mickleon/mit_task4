@@ -31,7 +31,7 @@ Date strToDate(string str) {
     return d;
 }
 
-int m = 37, m1 = m - 1;
+int m = 23, m1 = m - 1;
 vector<People*> hash_table(m);
 
 // Вспомогательная хэш-функция (метод деления)
@@ -99,8 +99,9 @@ People* find_people(int x) {
 void print_table() {
     for (int i = 0; i < m; i++) {
         cout << i << ": ";
-        if (hash_table[i])
-            cout << hash_table[i]->surname;
+        People* p = hash_table[i];
+        if (p)
+            cout << p->surname << ' ' << p->dateOfBirth.y;
         cout << endl;
     }
 }
